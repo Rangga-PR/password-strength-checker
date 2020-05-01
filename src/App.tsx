@@ -49,8 +49,8 @@ const Divider = styled.div`
 
 const LengthCheck = (input: String): number => {
   const length = input.length;
-  if (length < 3) return 40;
-  if (length < 12) return 20;
+  if (length <= 3) return 40;
+  if (length <= 12) return 20;
   return 0;
 };
 
