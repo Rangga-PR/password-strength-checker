@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { colorPalates } from "./variables";
+import StrengthMeter from "./component/strengthMeter";
 
 const AppContainer = styled.div`
   text-align: center;
@@ -35,25 +36,6 @@ const Input = styled.input`
   }
 `;
 
-const StrengthGauge = styled.div`
-  position: relative;
-  height: 25px;
-  width: 314px;
-  border-radius: 5px;
-  background-color: white;
-  margin-top: 10px;
-  overflow: hidden;
-
-  ::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    height: 100%;
-    width: 90%; /*use props variable later*/
-    background-color: ${colorPalates.paleGreen};
-  }
-`;
-
 const Divider = styled.div`
   margin-top: 30px;
   height: 2px;
@@ -65,12 +47,45 @@ const Divider = styled.div`
   }
 `;
 
+const LengthCheck = (input: String): number => {
+  const length = input.length;
+  if (length < 3) return 40;
+  if (length < 12) return 20;
+  return 0;
+};
+
+const characterCheck = (input: String): number => {
+  let deduction = 0;
+  if (!input.match(/([a-z])\w+/g)) deduction += 15;
+  if (!input.match(/([A-Z])\w+/g)) deduction += 15;
+  if (!input.match(/([0-9])\w+/g)) deduction += 15;
+  if (!input.match(/([^A-Za-z0-9])/g)) deduction += 15;
+  return deduction;
+};
+
 function App() {
+  const [input, setInput] = useState("");
+  const [strength, setStrength] = useState(0);
+
+  const handleInput = (event: any) => {
+    setInput(event.target.value);
+    let deduction =
+      LengthCheck(event.target.value) + characterCheck(event.target.value);
+    setStrength(100 - deduction);
+    if (event.target.value.length < 1) setStrength(0);
+  };
+
   return (
     <AppContainer>
       <Title>Password Strength Checker</Title>
-      <Input autoFocus type="text" placeholder="type your password here" />
-      <StrengthGauge />
+      <Input
+        autoFocus
+        type="text"
+        placeholder="type your password here"
+        onChange={handleInput}
+        value={input}
+      />
+      <StrengthMeter gauge={strength} />
       <Divider />
     </AppContainer>
   );
