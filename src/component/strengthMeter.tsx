@@ -20,6 +20,7 @@ const StrengthGauge = styled.div`
     position: absolute;
     left: 0;
     height: 100%;
+    transition: 0.7s;
     width: ${(props: StrengthMeterProps) => props.gauge}%;
     background-color: ${(props: StrengthMeterProps) => {
       if (props.gauge && props.gauge < 40) return colorPalates.paleRed;
